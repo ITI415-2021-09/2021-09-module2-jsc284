@@ -4,7 +4,8 @@ using System.Collections.Generic;
 
 public class Deck : MonoBehaviour {
 
-[Header("Set in Inspector")]
+	[Header("Set in Inspector")]
+	public bool startFaceUp = false;
 	//Suits
 	public Sprite suitClub;
 	public Sprite suitDiamond;
@@ -21,8 +22,8 @@ public class Deck : MonoBehaviour {
 	
 	
 	// Prefabs
-	public GameObject prefabSprite;
 	public GameObject prefabCard;
+	public GameObject prefabSprite;
 
 	[Header("Set Dynamically")]
 
@@ -83,12 +84,12 @@ public class Deck : MonoBehaviour {
 		for (int i=0; i<xDecos.Count; i++) {
 			// for each decorator in the XML, copy attributes and set up location and flip if needed
 			deco = new Decorator();
-			deco.type = xDecos[i].att ("type");
+			deco.type = xDecos[i].att("type");
 			deco.flip = (xDecos[i].att ("flip") == "1");   // too cute by half - if it's 1, set to 1, else set to 0
-			deco.scale = float.Parse (xDecos[i].att("scale"));
-			deco.loc.x = float.Parse (xDecos[i].att("x"));
-			deco.loc.y = float.Parse (xDecos[i].att("y"));
-			deco.loc.z = float.Parse (xDecos[i].att("z"));
+			deco.scale = float.Parse (xDecos[i].att ("scale"));
+			deco.loc.x = float.Parse (xDecos[i].att ("x"));
+			deco.loc.y = float.Parse (xDecos[i].att ("y"));
+			deco.loc.z = float.Parse (xDecos[i].att ("z"));
 			decorators.Add (deco);
 		}
 		
@@ -96,11 +97,10 @@ public class Deck : MonoBehaviour {
 		// read the card definitions, parse attribute values for pips
 		cardDefs = new List<CardDefinition>();
 		PT_XMLHashList xCardDefs = xmlr.xml["xml"][0]["card"];
-		
 		for (int i=0; i<xCardDefs.Count; i++) {
 			// for each carddef in the XML, copy attributes and set up in cDef
 			CardDefinition cDef = new CardDefinition();
-			cDef.rank = int.Parse(xCardDefs[i].att("rank"));
+			cDef.rank = int.Parse( xCardDefs[i].att("rank") );
 			
 			PT_XMLHashList xPips = xCardDefs[i]["pip"];
 			if (xPips != null) {			
@@ -108,7 +108,6 @@ public class Deck : MonoBehaviour {
 					deco = new Decorator();
 					deco.type = "pip";
 					deco.flip = (xPips[j].att ("flip") == "1");   // too cute by half - if it's 1, set to 1, else set to 0
-					
 					deco.loc.x = float.Parse (xPips[j].att("x"));
 					deco.loc.y = float.Parse (xPips[j].att("y"));
 					deco.loc.z = float.Parse (xPips[j].att("z"));
@@ -246,7 +245,7 @@ public class Deck : MonoBehaviour {
 			tSR.sortingOrder = 2;
 			tGO.name = "back";
 			card.back = tGO;
-			card.faceUp = false;
+			card.faceUp = startFaceUp;
 			
 			cards.Add (card);
 		} // for all the Cardnames	
@@ -268,12 +267,11 @@ public class Deck : MonoBehaviour {
 
 	 	int ndx;   // which card to move
 		tCards = new List<Card>();
-
-	 	while (oCards.Count > 0) 
+		while (oCards.Count > 0) 
 	 	{
 	 		// find a random card, add it to shuffled list and remove from original deck
 	 		ndx = Random.Range(0,oCards.Count);
-	 		tCards.Add(oCards[ndx]);
+	 		tCards.Add (oCards[ndx]);
 	 		oCards.RemoveAt(ndx);
 	 	}
 
