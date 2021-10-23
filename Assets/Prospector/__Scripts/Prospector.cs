@@ -135,15 +135,21 @@ public class Prospector : MonoBehaviour {
 			tableau.Add(cp);
         }
 
-		foreach (CardProspector tCP in tableau)
+        foreach (CardProspector tCP in tableau)
         {
-			foreach ( int hid in tCP.slotDef.hiddenBy)
+            foreach (int hid in tCP.slotDef.hiddenBy)
             {
-				cp = FindCardByLayoutID(hid);
-				tCP.hiddenBy.Add(cp);
+                cp = FindCardByLayoutID(hid);
+                tCP.hiddenBy.Add(cp);
             }
+
+            /* Add Gold Card Generation
+            Generate random int between 0-9
+			If 0 then generate gold card
+
+			*/
         }
-		MoveToTarget(Draw());
+        MoveToTarget(Draw());
 
 		UpdateDrawPile();
     }
@@ -261,6 +267,7 @@ public class Prospector : MonoBehaviour {
 				SetTableauFaces();
 				ScoreManager.EVENT(eScoreEvent.mine);
 				FloatingScoreHandler(eScoreEvent.mine);
+				// If card is gold, set eScoreEvent.mineGold
 				break;
         }
 		CheckForGameOver();
