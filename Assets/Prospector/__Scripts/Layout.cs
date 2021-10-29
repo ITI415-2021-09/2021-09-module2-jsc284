@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+// Yes we are in the right file
+
 [System.Serializable]
 public class SlotDef
 {
@@ -25,8 +28,8 @@ public class Layout : MonoBehaviour
     public List<SlotDef> slotDefs;
     public SlotDef drawPile;
     public SlotDef discardPile;
-    public string[] sortingLayerNames = new string[] { "Row 0", "Row1",
-                        "Row2", "Row3", "Discard", "Draw"};
+    public string[] sortingLayerNames = new string[] { "Row0", "Row1",
+                        "Row2", "Row3", "Draw", "Discard"};
 
     public void ReadLayout(string xmlText)
     {
