@@ -4,8 +4,31 @@ using UnityEngine;
 
 public class DeckProto : MonoBehaviour
 {
+    [Header("Set in Inspector")]
+    public Sprite suitClub;
+    public Sprite suitDiamond;
+    public Sprite suitHeart;
+    public Sprite suitSpade;
+
+    public Sprite[] faceSprites;
+    public Sprite[] rankSprites;
+
+    public Sprite cardBack;
+    public Sprite cardBackGold;
+    public Sprite cardFront;
+    public Sprite cardFrontGold;
+
+    public GameObject prefabCard;
+    public GameObject prefabSprite;
+
     [Header("Set Dynamically")]
     public PT_XMLReader xmlr;
+    public List<string> cardNames;
+    public List<CardProto> cards;
+    public List<DecoratorProto> decorators;
+    public List<CardDefinitionProto> cardDefs;
+    public Transform deckAnchor;
+    public Dictionary<string, Sprite> dictSuits;
 
     public void InitDeck(string deckXMLText)
     {
@@ -22,6 +45,52 @@ public class DeckProto : MonoBehaviour
         s += " x=" + xmlr.xml["xml"][0]["decorator"][0].att("x");
         s += " y=" + xmlr.xml["xml"][0]["decorator"][0].att("y");
         s += " scale=" + xmlr.xml["xml"][0]["decorator"][0].att("scale");
-        print(s);
+        // print(s);
+
+        decorators = new List<DecoratorProto>();
+        PT_XMLHashList xDecos = xmlr.xml["xml"][0]["decorator"];
+        DecoratorProto deco;
+        for (int i=0; i<xDecos.Count; i++)
+        {
+            deco = new DecoratorProto();
+            deco.type = xDecos[i].att("type");
+            deco.flip = (xDecos[i].att("flip") == "1");
+            deco.scale = float.Parse(xDecos[i].att("scale"));
+            deco.loc.x = float.Parse(xDecos[i].att("x"));
+            deco.loc.y = float.Parse(xDecos[i].att("y"));
+            deco.loc.z = float.Parse(xDecos[i].att("z"));
+            decorators.Add(deco);
+        }
+
+        cardDefs = new List<CardDefinitionProto>();
+        PT_XMLHashList xCardDefs = xmlr.xml["xml"][0]["card"];
+        for (int i=0; i<xCardDefs.Count; i++)
+        {
+            CardDefinitionProto cDef = new CardDefinitionProto();
+            cDef.rank = int.Parse(xCardDefs[i].att("rank"));
+            PT_XMLHashList xPips = xCardDefs[i]["pip"];
+            if (xPips != null)
+            {
+                for (int j=0; j<xPips.Count; j++)
+                {
+                    deco = new DecoratorProto();
+                    deco.type = "pip";
+                    deco.flip = (xPips[j].att("flip") == "1");
+                    deco.loc.x = float.Parse(xPips[j].att("x"));
+                    deco.loc.y = float.Parse(xPips[j].att("y"));
+                    deco.loc.z = float.Parse(xPips[j].att("z"));
+                    if (xPips[j].HasAtt("scale"))
+                    {
+                        deco.scale = float.Parse(xPips[j].att("scale"));
+                    }
+                    cDef.pips.Add(deco);
+                }
+            }
+            if (xCardDefs[i].HasAtt("face"))
+            {
+                cDef.face = xCardDefs[i].att("face");
+            }
+            cardDefs.Add(cDef);
+        }
     }
 }
