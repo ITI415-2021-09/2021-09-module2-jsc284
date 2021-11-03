@@ -5,6 +5,7 @@ using UnityEngine;
 public class CardProto : MonoBehaviour
 {
 }
+
 public class DecoratorProto
 {
     public string type;
