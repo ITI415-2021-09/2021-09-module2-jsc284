@@ -198,6 +198,7 @@ GameObject:
   - component: {fileID: 827460509}
   - component: {fileID: 827460514}
   - component: {fileID: 827460511}
+  - component: {fileID: 827460515}
   m_Layer: 0
   m_Name: _MainCamera
   m_TagString: MainCamera
@@ -233,6 +234,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e46ff519b864bf44e927abca22ac2ef5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startFaceUp: 0
   suitClub: {fileID: 21300000, guid: 05e09b7151526f543a9f71dee32f53c3, type: 3}
   suitDiamond: {fileID: 21300000, guid: dc1a7247eb4396942a94987f1b4412aa, type: 3}
   suitHeart: {fileID: 21300000, guid: 51eb03d00d52fd14d9ca147a37087860, type: 3}
@@ -351,4 +353,53 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deckXML: {fileID: 4900000, guid: 92c036526b74e3240977bc5f49844177, type: 3}
+  layoutXML: {fileID: 4900000, guid: dd0439b1b1d65534c9cefb08932a2c7c, type: 3}
   deck: {fileID: 0}
+  layout: {fileID: 0}
+--- !u!114 &827460515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 827460508}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 338676744a99cf1448625692664bc4f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  xmlr:
+    xmlText: 
+  multiplier: {x: 0, y: 0}
+  slotDefs: []
+  drawPile:
+    x: 0
+    y: 0
+    faceUp: 0
+    layerName: Default
+    layerID: 0
+    id: 0
+    hiddenBy: 
+    type: slot
+    stagger: {x: 0, y: 0}
+  discardPile:
+    x: 0
+    y: 0
+    faceUp: 0
+    layerName: Default
+    layerID: 0
+    id: 0
+    hiddenBy: 
+    type: slot
+    stagger: {x: 0, y: 0}
+  sortingLayerNames:
+  - Row0
+  - Row1
+  - Row2
+  - Row3
+  - Row4
+  - Row5
+  - Row6
+  - Deck
+  - Draw
+  - Discard
