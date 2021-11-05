@@ -11,11 +11,11 @@ public enum eCardStateProto
 }
 public class CardProspectorProto : MonoBehaviour
 {
-    [Header("Set Dynamically: CardProspector")]
+    [Header("Set Dynamically: CardProspectorProto")]
     public eCardState state = eCardState.drawpile;
-    public List<CardProspector> hiddenBy = new List<CardProspector>();
+    public List<CardProspectorProto> hiddenBy = new List<CardProspectorProto>();
     public int layoutID;
-    public SlotDef slotDef;
+    public SlotDefProto slotDef;
 
     override public void OnMouseUpAsButton()
     {

@@ -18,11 +18,11 @@ public class ProspectorProto : MonoBehaviour
     [Header("Set Dynamically")]
     public Deck deck;
     public Layout layout;
-    public List<CardProspector> drawPile;
+    public List<CardProspectorProto> drawPile;
     public Transform layoutAnchor;
-    public CardProspector target;
-    public List<CardProspector> tableau;
-    public List<CardProspector> discardPile;
+    public CardProspectorProto target;
+    public List<CardProspectorProto> tableau;
+    public List<CardProspectorProto> discardPile;
 
     void Awake()
     {
@@ -46,26 +46,26 @@ public class ProspectorProto : MonoBehaviour
         drawPile = ConvertListCardsToListCardProspectors(deck.cards);
         LayoutGame();
     }
-    
-    List<CardProspector> ConvertListCardsToListCardProspectors(List<Card> lCD)
+
+    List<CardProspectorProto> ConvertListCardsToListCardProspectors(List<Card> lCD)
     {
-        List<CardProspector> lCP = new List<CardProspector>();
-        CardProspector tCP;
-        foreach(Card tCD in lCD)
+        List<CardProspectorProto> lCP = new List<CardProspectorProto>();
+        CardProspectorProto tCP;
+        foreach (Card tCD in lCD)
         {
-            tCP = tCD as CardProspector;
+            tCP = tCD as CardProspectorProto;
             lCP.Add(tCP);
         }
         return (lCP);
     }
 
-    CardProspector Draw()
+    CardProspectorProto Draw()
     {
-        CardProspector cd = drawPile[0];
+        CardProspectorProto cd = drawPile[0];
         drawPile.RemoveAt(0);
         return (cd);
     }
-    
+
     void LayoutGame()
     {
         if (layoutAnchor == null)
@@ -75,8 +75,8 @@ public class ProspectorProto : MonoBehaviour
             layoutAnchor.transform.position = layoutCenter;
         }
 
-        CardProspector cp;
-        foreach (SlotDef tSD in layout.slotDefs)
+        CardProspectorProto cp;
+        foreach (SlotDefProto tSD in layout.slotDefs)
         {
             cp = Draw();
             cp.faceUp = tSD.faceUp;
@@ -90,13 +90,51 @@ public class ProspectorProto : MonoBehaviour
             cp.state = eCardState.tableau;
             cp.SetSortingLayerName(tSD.layerName);
 
-            tableau.Add(cp);
+            Tableau.Add(cp);
         }
+
+        foreach (CardProspectorProto tCP in tableau)
+        {
+            foreach (int hid in tCP.slotDef.hiddenBy)
+            {
+                cp = FindCardByLayoutID(hid);
+                tCP.hiddenBy.Add(cp);
+            }
+        }
+
         MoveToTarget(Draw());
         UpdateDrawPile();
     }
 
-    void MoveToDiscard(CardProspector cd)
+    CardProspectorProto FindCardByLayoutID(int layoutID)
+    {
+        foreach (CardProspectorProto tCP in tableau)
+        {
+            if (tCP.layoutID == layoutID)
+            {
+                return (tCP);
+            }
+        }
+        return (null);
+    }
+
+    void SetTableauFaces()
+    {
+        foreach (CardProspectorProto cd in tableau)
+        {
+            bool faceUp = true;
+            foreach (CardProspector cover in cd.hiddenBy)
+            {
+                if (cover.state == eCardState.tableau)
+                {
+                    faceUp = false;
+                }
+            }
+            cd.faceUp = faceUp;
+        }
+    }
+
+    void MoveToDiscard(CardProspectorProto cd)
     {
         cd.state = eCardState.discard;
         discardPile.Add(cd);
@@ -107,7 +145,7 @@ public class ProspectorProto : MonoBehaviour
             -layout.discardPile.layerID + 0.5f);
         cd.faceUp = true;
         cd.SetSortingLayerName(layout.discardPile.layerName);
-        cd.SetSortOrder(-100+discardPile.Count);
+        cd.SetSortOrder(-100 + discardPile.Count);
     }
 
     void MoveToTarget(CardProspector cd)
@@ -127,8 +165,8 @@ public class ProspectorProto : MonoBehaviour
 
     void UpdateDrawPile()
     {
-        CardProspector cd;
-        for (int i=0; i<drawPile.Count; i++)
+        CardProspectorProto cd;
+        for (int i = 0; i < drawPile.Count; i++)
         {
             cd = drawPile[i];
             cd.transform.parent = layoutAnchor;
@@ -144,29 +182,82 @@ public class ProspectorProto : MonoBehaviour
             cd.SetSortingLayerName(layout.drawPile.layerName);
             cd.SetSortOrder(-10 * i);
         }
-
-        public void CardClicked(CardProspector cd)
-        {
-            switch (cd.state)
-            {
-                case eCardState.target:
-                    break;
-
-                case eCardState.drawpile:
-                    MoveToDiscard(target);
-                    MoveToTarget(Draw());
-                    UpdateDrawPile();
-                    break;
-
-                case eCardState.tableau:
-                    break;
-            }
-        }
     }
 
-    // Update is called once per frame
-    void Update()
+    void CardClicked(CardProspectorProto cd)
     {
-        
+        switch (cd.state)
+        {
+            case eCardState.target:
+                break;
+
+            case eCardState.drawpile:
+                MoveToDiscard(target);
+                MoveToTarget(Draw());
+                UpdateDrawPile();
+                break;
+
+            case eCardState.tableau:
+                bool validMatch = true;
+                if (!cd.faceUp)
+                {
+                    validMatch = false;
+                }
+                if (!EqualsThirteen(cd0, cd1))
+                {
+                    validMatch = false;
+                }
+                if (!validMatch) return;
+
+                tableau.Remove(cd);
+                MoveToTarget(cd);
+                SetTableauFaces();
+                break;
+        }
+        CheckForGameOver();
     }
+
+    void CheckForGameOver()
+    {
+        if (tableau.Count == 0)
+        {
+            GameOver(true);
+            return;
+        }
+
+        if (drawPile.Count > 0)
+        {
+            return;
+        }
+
+        /* foreach (CardProspectorProto cd in tableau)
+        {
+            if (EqualsThirteen() {
+                return;
+        }
+        } */
+            GameOver(false);
+}
+
+    void GameOver(bool won)
+{
+    if (won)
+    {
+        print("Game Over. You won! :)");
+    } else
+    {
+        print("Game Over. You lost. :(");
+    }
+    SceneManager.LoadScene("GameScene");
+}
+        public bool EqualsThirteen(CardProspectorProto c0, CardProspectorProto c1)
+        {
+            if (!c0.faceUp || !c1.faceUp) return (false);
+
+        if (Mathf.Abs(c0.rank + c1.rank) == 13) and (c1.rank != 13); {
+            return (true);
+        }
+            return (false);
+        }
+
 }
