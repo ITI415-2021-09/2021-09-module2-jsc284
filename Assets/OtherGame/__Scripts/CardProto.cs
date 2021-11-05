@@ -75,6 +75,11 @@ public class CardProto : MonoBehaviour
         }
     }
 
+    virtual public void OnMouseUpAsButton()
+    {
+        print (name);
+    }
+
     [System.Serializable]
     public class Decorator
     {
