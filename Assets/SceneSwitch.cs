@@ -7,7 +7,7 @@ public class SceneSwitch : MonoBehaviour
 {
     public void LoadScene1()
     {
-        SceneManager.LoadScene("__Prospector_Scene_0");
+        SceneManager.LoadScene("__Prospector_Scene");
     }
 
     public void LoadScene2()
