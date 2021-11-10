@@ -53,9 +53,24 @@ TagManager:
   - name: Row3
     uniqueID: 4254758929
     locked: 0
+  - name: Row4
+    uniqueID: 393481527
+    locked: 0
+  - name: Row5
+    uniqueID: 3982620407
+    locked: 0
+  - name: Row6
+    uniqueID: 675916541
+    locked: 0
   - name: Draw
     uniqueID: 3966828863
     locked: 0
   - name: Discard
     uniqueID: 3212152543
+    locked: 0
+  - name: New Layer
+    uniqueID: 3352478219
+    locked: 0
+  - name: New Layer
+    uniqueID: 3229407775
     locked: 0

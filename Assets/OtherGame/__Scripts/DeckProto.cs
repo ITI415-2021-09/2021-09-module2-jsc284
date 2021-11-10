@@ -5,7 +5,7 @@ using UnityEngine;
 public class DeckProto : MonoBehaviour
 {
     [Header("Set in Inspector")]
-    public bool startFaceUp = false;
+    public bool startFaceUp = true;
     //Suits
     public Sprite suitClub;
     public Sprite suitDiamond;

@@ -9,7 +9,7 @@ public enum eCardStateProto
     target,
     discard
 }
-public class CardProspectorProto : MonoBehaviour
+public class CardProspectorProto : Card
 {
     [Header("Set Dynamically: CardProspectorProto")]
     public eCardState state = eCardState.drawpile;

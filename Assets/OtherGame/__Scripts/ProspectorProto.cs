@@ -16,8 +16,9 @@ public class ProspectorProto : MonoBehaviour
     public Vector3 layoutCenter;
 
     [Header("Set Dynamically")]
-    public Deck deck;
-    public Layout layout;
+    public DeckProto deck;
+    public LayoutProto layout;
+    public List<CardProspectorProto> deckPile;
     public List<CardProspectorProto> drawPile;
     public Transform layoutAnchor;
     public CardProspectorProto target;
@@ -31,9 +32,9 @@ public class ProspectorProto : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        deck = GetComponent<Deck>();
+        deck = GetComponent<DeckProto>();
         deck.InitDeck(deckXML.text);
-        Deck.Shuffle(ref deck.cards);
+        DeckProto.Shuffle(ref deck.cards);
 
         /* Card c;
         for (int cNum=0; cNum<deck.cards.Count; cNum++)
@@ -41,7 +42,7 @@ public class ProspectorProto : MonoBehaviour
             c = deck.cards[cNum];
             c.transform.localPosition = new Vector3((cNum % 13) * 3, cNum / 13 * 4, 0);
         } */
-        layout = GetComponent<Layout>();
+        layout = GetComponent<LayoutProto>();
         layout.ReadLayout(layoutXML.text);
         drawPile = ConvertListCardsToListCardProspectors(deck.cards);
         LayoutGame();
@@ -59,7 +60,7 @@ public class ProspectorProto : MonoBehaviour
         return (lCP);
     }
 
-    CardProspectorProto Draw()
+    public CardProspectorProto Draw()
     {
         CardProspectorProto cd = drawPile[0];
         drawPile.RemoveAt(0);
@@ -90,7 +91,7 @@ public class ProspectorProto : MonoBehaviour
             cp.state = eCardState.tableau;
             cp.SetSortingLayerName(tSD.layerName);
 
-            Tableau.Add(cp);
+            tableau.Add(cp);
         }
 
         foreach (CardProspectorProto tCP in tableau)
@@ -123,7 +124,7 @@ public class ProspectorProto : MonoBehaviour
         foreach (CardProspectorProto cd in tableau)
         {
             bool faceUp = true;
-            foreach (CardProspector cover in cd.hiddenBy)
+            foreach (CardProspectorProto cover in cd.hiddenBy)
             {
                 if (cover.state == eCardState.tableau)
                 {
@@ -148,7 +149,7 @@ public class ProspectorProto : MonoBehaviour
         cd.SetSortOrder(-100 + discardPile.Count);
     }
 
-    void MoveToTarget(CardProspector cd)
+    void MoveToTarget(CardProspectorProto cd)
     {
         if (target != null) MoveToDiscard(target);
         target = cd;
@@ -184,7 +185,7 @@ public class ProspectorProto : MonoBehaviour
         }
     }
 
-    void CardClicked(CardProspectorProto cd)
+    public void CardClicked(CardProspectorProto cd)
     {
         switch (cd.state)
         {
@@ -203,7 +204,7 @@ public class ProspectorProto : MonoBehaviour
                 {
                     validMatch = false;
                 }
-                if (!EqualsThirteen(cd0, cd1))
+                if (!EqualsThirteen(cd, target))
                 {
                     validMatch = false;
                 }
@@ -230,12 +231,12 @@ public class ProspectorProto : MonoBehaviour
             return;
         }
 
-        /* foreach (CardProspectorProto cd in tableau)
+        foreach (CardProspectorProto cd in tableau)
         {
-            if (EqualsThirteen() {
+            if (EqualsThirteen(cd, target)) {
                 return;
         }
-        } */
+        }
             GameOver(false);
 }
 
@@ -253,8 +254,13 @@ public class ProspectorProto : MonoBehaviour
         public bool EqualsThirteen(CardProspectorProto c0, CardProspectorProto c1)
         {
             if (!c0.faceUp || !c1.faceUp) return (false);
+        
+        if (Mathf.Abs(c0.rank) == 13)
+        {
+            return (true);
+        }
 
-        if (Mathf.Abs(c0.rank + c1.rank) == 13) and (c1.rank != 13); {
+        if (Mathf.Abs(c0.rank + c1.rank) == 13 && c1.rank != 13) {
             return (true);
         }
             return (false);

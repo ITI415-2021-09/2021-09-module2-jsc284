@@ -7,7 +7,7 @@ public class SlotDefProto
 {
     public float x;
     public float y;
-    public bool faceUp = false;
+    public bool faceUp = true;
     public string layerName = "Default";
     public int layerID = 0;
     public int id;
@@ -21,9 +21,10 @@ public class LayoutProto : MonoBehaviour
     public PT_XMLReader xmlr;
     public PT_XMLHashtable xml;
     public Vector2 multiplier;
-    public List<SlotDef> slotDefs;
-    public SlotDef drawPile;
-    public SlotDef discardPile;
+    public List<SlotDefProto> slotDefs;
+    public SlotDefProto deckPile;
+    public SlotDefProto drawPile;
+    public SlotDefProto discardPile;
     public string[] sortingLayerNames = new string[] { "Row0", "Row1", "Row2", "Row3", "Row4", "Row5", "Row6", "Deck", "Draw", "Discard" };
 
     public void ReadLayout(string xmlText)
@@ -35,12 +36,12 @@ public class LayoutProto : MonoBehaviour
         multiplier.x = float.Parse(xml["multiplier"][0].att("x"));
         multiplier.y = float.Parse(xml["multiplier"][0].att("y"));
 
-        SlotDef tSD;
+        SlotDefProto tSD;
         PT_XMLHashList slotsX = xml["slot"];
 
         for(int i=0; i<slotsX.Count; i++)
         {
-            tSD = new SlotDef();
+            tSD = new SlotDefProto();
             if (slotsX[i].HasAtt("type"))
             {
                 tSD.type = slotsX[i].att("type");
@@ -68,7 +69,10 @@ public class LayoutProto : MonoBehaviour
                     }
                     slotDefs.Add(tSD);
                     break;
-
+                
+                case "deckpile":
+                    deckPile = tSD;
+                    break;
                 case "drawpile":
                     tSD.stagger.x = float.Parse(slotsX[i].att("xstagger"));
                     drawPile = tSD;
